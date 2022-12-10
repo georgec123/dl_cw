@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pf
 import matplotlib.pyplot as plt
-from Data import organise_data, accuracy
+from Data import organise_data, accuracy, B_data
 
 arr = organise_data(80000)
 train = arr[0]
@@ -84,7 +84,7 @@ def fit_FNN(df, numeric_names, binary_names):
 
     model = tf.keras.Model(inputs, res)
 
-    model.compile(optimizer='sgd',
+    model.compile(optimizer='adam',
                 loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
                 metrics=['accuracy'])
     callbacks_used = [
@@ -95,13 +95,21 @@ def fit_FNN(df, numeric_names, binary_names):
 
     return model
 
-def predict(f, df, numeric_names, binary_names):
+def predict(f, df):
 
     Y_hat = (f.predict(dict(df)) > 0.5).astype("int32")
 
     return Y_hat
 
 h = fit_FNN(train, numeric_names, binary_names)
+label = test['label'].tolist()
+test = test.drop(['label'], axis=1)
 Y_hat = predict(h, test, numeric_names, binary_names)
+
+B_data = B_data()
+print(test)
+print(B_data)
+Y_hat_B = predict(h, B_data, numeric_names, binary_names)
 print(Y_hat)
-print(accuracy(Y_hat, test['label'].tolist()))
+print(accuracy(Y_hat, label))
+print(Y_hat_B)
