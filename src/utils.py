@@ -16,21 +16,31 @@ def get_features(df):
     prev_mid_m_cols = ['c1', 'c2', 'c3', 'c4', 'c5']
     
     # engineer features
+
+    # cumulative l1+l2 volume
     df['ss_lob_12_v'] = df['ss_lob_1_v']+df['ss_lob_2_v']
     df['bs_lob_12_v'] = df['bs_lob_1_v']+df['bs_lob_2_v']
 
+    # difference of order book volume (L1)
     df['l1_diff']= df['ss_lob_1_v']-df['bs_lob_1_v']
     df['l12_diff']= df['ss_lob_12_v']-df['bs_lob_12_v']
 
+    df['midprice'] = (df['bs_lob_1_p']+df['ss_lob_1_p'])/2
+
+    # L1 VWAP
     df['vwap'] = (df['bs_lob_1_p']*df['bs_lob_1_v'] + df['ss_lob_1_p']*df['ss_lob_1_v'])/(df['ss_lob_1_v']+df['bs_lob_1_v'])
+    df['vwap_gt_mid'] = (df['vwap'] > df['midprice']).astype(float)
 
-
+    # Indicator if there is more L1 buyside pressure
     df['bs_pressure1'] = (df['bs_lob_1_v']>df['ss_lob_1_v']).astype(int)
 
+    # Average of last 5 moves
     df['avg_5'] = df[prev_mid_m_cols].mean(axis=1)
+
+    # Momentum indicator
     df['momentum_up'] = (df['avg_5']>0.5).astype(int)
 
-    engineered_cols = ['ss_lob_12_v','bs_lob_12_v','l1_diff','l12_diff', 'vwap']
+    engineered_cols = ['ss_lob_12_v','bs_lob_12_v','l1_diff','l12_diff', 'vwap', 'midprice']
 
     return df, engineered_cols
 
