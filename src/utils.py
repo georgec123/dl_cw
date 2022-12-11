@@ -163,9 +163,12 @@ def k_fold(model, X, Y, batch_size, epochs, history, splits=5):
     test_accuracy = accuracy[:,1]
     train_accuracy = accuracy[:,0]
 
-    ax = plt.boxplot([train_accuracy, test_accuracy], labels=['train','test'])
-    plt.scatter([2]*len(test_accuracy), test_accuracy);
-    plt.scatter([1]*len(train_accuracy), train_accuracy); plt.show()
+    ax = plt.boxplot([train_accuracy, test_accuracy], labels=['Train','Test'])
+    plt.scatter([2]*len(test_accuracy), test_accuracy)
+    plt.scatter([1]*len(train_accuracy), train_accuracy)
+    plt.title(f'{splits}- fold Cross Validation')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Dataset')
 
     e = time.time()
 
