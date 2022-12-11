@@ -5,7 +5,7 @@ from tensorflow import keras
 from keras.callbacks import History 
 
 import pandas as pd
-from sklearn.model_selection import train_test_split, KFold, ParameterGrid
+from sklearn.model_selection import KFold
 import time
 import matplotlib.pyplot as plt
 import numpy as np
