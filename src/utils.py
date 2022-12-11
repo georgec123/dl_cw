@@ -10,6 +10,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.style.use('ggplot')
 
 def get_features(df):
     prev_mid_m_cols = ['c1', 'c2', 'c3', 'c4', 'c5']
@@ -173,3 +174,17 @@ def k_fold(model, X, Y, batch_size, epochs, history, splits=5):
     e = time.time()
 
     print(f"Time taken: {e-s:.1f}s")
+
+
+def results_to_file(results: dict, fp:str):
+    df = pd.DataFrame(results)
+    
+    column_format=f"|r||{'|'.join(['r']*(df.shape[1]-1))}|"
+
+    df.style.format(na_rep='-', precision=4).hide(axis="index").set_table_styles([
+    {'selector': 'toprule', 'props': ':hline;'},
+    {'selector': 'midrule', 'props': ':hline;'},
+    {'selector': 'bottomrule', 'props': ':hline;'},
+        ], overwrite=False).to_latex(fp, clines="all;data", hrules =False, column_format=column_format)
+    
+    return df
